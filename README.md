@@ -17,6 +17,3 @@ Ao executar o docker run, aparece como resultado a imagem:
 Conforme podemos ver, a imagem ficou com um tamanho < 2 MB:
 
 ![resultado-size-desafio-go](https://github.com/user-attachments/assets/697858f6-1e02-44f9-b6ff-c82b4f002c6b)
-
-
-
