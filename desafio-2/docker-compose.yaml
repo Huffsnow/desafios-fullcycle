@@ -1,0 +1,45 @@
+services:
+  app:
+    container_name: app
+    image: mreno14/node-desafio2
+    build:
+      context: node
+      dockerfile: Dockerfile
+    volumes:
+      - ./node:/usr/src/app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh node index.js
+    tty: true
+    networks:
+      - desafio-2
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: mreno14/db-desafio2
+    build:
+      context: mysql
+      dockerfile: Dockerfile
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    restart: always
+    tty: true
+    networks:
+      - desafio-2
+  
+  nginx:
+    container_name: nginx
+    image: mreno14/nginx-desafio2
+    build: 
+      context: nginx
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - "8080:80"
+    networks:
+      - desafio-2
+    depends_on:
+      - app
+
+networks:
+  desafio-2:
+     driver: bridge
