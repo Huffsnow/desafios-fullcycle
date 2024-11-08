@@ -16,18 +16,16 @@ services:
       - db
   db:
     container_name: db
-    image: mysql:5.7
-    command: --innodb-use-native-aio=0
+    image: mreno14/mysql-desafio2
+    build:
+      context: mysql
+      dockerfile: Dockerfile
     volumes:
       - ./mysql/data:/var/lib/mysql
     restart: always
     tty: true
-    environment:
-      - MYSQL_DATABASE=nodedb
-      - MYSQL_ROOT_PASSWORD=root
     networks:
       - desafio-2
-  
   nginx:
     container_name: nginx
     image: mreno14/nginx-desafio2
