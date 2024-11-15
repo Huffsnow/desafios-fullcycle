@@ -1,0 +1,55 @@
+services:
+ 
+  app:
+    container_name: app
+    image: mreno14/node-desafio2
+    build:
+      context: node
+      dockerfile: Dockerfile
+    volumes:
+      - ./node:/usr/src/app
+    entrypoint: sh -c "npm install && npm run dev"
+    tty: true
+    networks:
+      - desafio-2
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  db:
+    container_name: db
+    image: mreno14/mysql-desafio2
+    build:
+      context: mysql
+      dockerfile: Dockerfile
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    restart: always
+    tty: true
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    networks:
+      - desafio-2
+  
+  nginx:
+    container_name: nginx
+    image: mreno14/nginx-desafio2
+    build: 
+      context: nginx
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+    networks:
+      - desafio-2
+    depends_on:
+      - app
+
+networks:
+  desafio-2:
+     driver: bridge
